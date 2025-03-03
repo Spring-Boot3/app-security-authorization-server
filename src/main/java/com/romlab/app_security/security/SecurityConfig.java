@@ -4,6 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -27,11 +32,34 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(auth ->
-                auth.requestMatchers("/loans", "/account", "/balance", "/cards").authenticated()
+                auth
+                .requestMatchers("/loans", "/account", "/balance", "/cards").authenticated()
 //                .requestMatchers("/welcome", "/about-us").permitAll())
                 .anyRequest().permitAll()) //Esto es lo mismo que lo de arriba solo que global en todo lo demas
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
         return httpSecurity.build();
+    }
+
+    @Bean
+    InMemoryUserDetailsManager inMemoryUserDetailsManager() throws Exception {
+        UserDetails admin = User
+                .withUsername("admin")
+                .password("to-be-encoded")
+                .authorities("ADMIN")
+                .build();
+
+        var user = User
+                .withUsername("user")
+                .password("to-be-encoded")
+                .authorities("USER")
+                .build();
+        return new InMemoryUserDetailsManager(admin, user);
+    }
+
+    /* Esto solo nos ayudara a mitigar el error de no enviar encoded asi que solo usarlo en pruebas o desarrollo */
+    @Bean
+    PasswordEncoder passwordEncoder() throws Exception {
+        return NoOpPasswordEncoder.getInstance();
     }
 }
