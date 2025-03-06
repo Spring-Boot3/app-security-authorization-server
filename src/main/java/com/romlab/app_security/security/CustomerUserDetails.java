@@ -15,9 +15,9 @@ import java.util.List;
 @Service
 @Transactional
 @AllArgsConstructor
-public class CustomerUserDetails implements UserDetailsService {
+public class CustomerUserDetails /*implements UserDetailsService*/ {
 
-    private final CustomerRepository customerRepository;
+    /*private final CustomerRepository customerRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -25,6 +25,6 @@ public class CustomerUserDetails implements UserDetailsService {
             var authorities = List.of(new SimpleGrantedAuthority(customer.getRole()));
             return new User(customer.getEmail(), customer.getPassword(), authorities);
         }).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
+    }*/
 
 }
