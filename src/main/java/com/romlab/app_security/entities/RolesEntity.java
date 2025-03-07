@@ -1,24 +1,19 @@
 package com.romlab.app_security.entities;
 
 import jakarta.persistence.*;
-
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 
 @Entity
-@Table(name = "customers")
+@Table(name = "roles")
 @Data
-public class CustomerEntity implements Serializable {
+public class RolesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
-    private String email;
-    @Column(name = "pwd")
-    private String password;
-    @Column(name = "rol")
     private String role;
+    private String description;
 
 }
