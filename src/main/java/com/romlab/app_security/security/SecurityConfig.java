@@ -11,8 +11,15 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -34,6 +41,9 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
+        var requestHandler = new CsrfTokenRequestAttributeHandler();
+        requestHandler.setCsrfRequestAttributeName("_csrf");
         httpSecurity.authorizeHttpRequests(auth ->
                 auth
                 .requestMatchers("/loans", "/account", "/balance", "/cards").authenticated()
@@ -42,8 +52,13 @@ public class SecurityConfig {
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
         /*Esto es para deshabilitar los CORS y CSRF !No recomendado para ambientes deployados!*/
-        httpSecurity.cors(AbstractHttpConfigurer::disable);
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+       /* httpSecurity.cors(AbstractHttpConfigurer::disable);
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);*/
+        httpSecurity.cors(cors -> corsConfigurationSource());
+        httpSecurity.csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler)
+                .ignoringRequestMatchers("/welcome", "/about-us")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
         return httpSecurity.build();
     }
 
@@ -77,5 +92,25 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        var config = new CorsConfiguration();
+        /* Aqui estamos dando la instruccion de que origenes si sera aceptada la peticion */
+        //config.setAllowedOrigins(List.of("http://localhost:4200/"));
+        config.setAllowedOrigins(List.of("*")); // Con esta instruccion la app respondera desde cualquier origen
+
+        /* Aqui estamos dando la instruccion de que metodos podran ejecutarce en nuestra app */
+        //config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("*")); // Con esta instruccion aceptara todos los metodos HTTP
+
+        config.setAllowedHeaders(List.of("*")); // Con esta instruccion aceptara todos los headers
+
+        var source = new UrlBasedCorsConfigurationSource();
+        /* Aqui registramos toda la configuracion sobre los CORS
+        * el "/**" quiere decir que la configuracion sera aplicada a todos mis recursos(endpoints) */
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
