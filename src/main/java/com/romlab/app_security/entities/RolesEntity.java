@@ -13,6 +13,8 @@ import java.math.BigInteger;
 @Table(name = "roles")
 public class RolesEntity {
 
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private BigInteger id;
     @Id
     @Column(name = "role_name")
     private String name;

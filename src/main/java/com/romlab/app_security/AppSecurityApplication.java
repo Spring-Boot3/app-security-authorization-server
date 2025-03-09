@@ -8,8 +8,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 /* Esta anotación es para incorporar
 * la seguridad ya está colocado por default asi
 * que colocarla ya será dependiendo de
-* cada persona
+* cada persona la opcion debug esta esta por
+* defaultnos en false y nos ayuda
+* para saber porque filtros pasann las peticiones
+* NOTA: solo usarlo en desarrollo ya que
+* contiene datos sensibles.
 */
+//@EnableWebSecurity(debug = true)
 @EnableWebSecurity
 public class AppSecurityApplication {
 	public static void main(String[] args) {
