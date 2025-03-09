@@ -3,6 +3,7 @@ package com.romlab.app_security.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,6 +23,8 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Configuration
+// Esta anotacion es necesaria para poder utilizar el @PreAuthorize a nivel controller o capa de servicio
+//@EnableMethodSecurity
 public class SecurityConfig {
 
     /* Esta es la configuration por default de Spring Security
@@ -41,13 +44,17 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
+        httpSecurity.addFilterBefore(new ApiKeyFilter(), BasicAuthenticationFilter.class);
         var requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
         httpSecurity.authorizeHttpRequests(auth ->
                 auth
-                .requestMatchers("/loans", "/account", "/balance", "/cards").authenticated()
+//                .requestMatchers("/loans", "/account", "/balance", "/cards").authenticated()
 //                .requestMatchers("/welcome", "/about-us").permitAll())
+                .requestMatchers("/loans").hasRole("USER")
+                .requestMatchers("/balance").hasRole("USER")
+                .requestMatchers("/cards").hasRole("ADMIN")
+                .requestMatchers("/account").hasRole("ADMIM")
                 .anyRequest().permitAll()) //Esto es lo mismo que lo de arriba solo que global en todo lo demas
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());

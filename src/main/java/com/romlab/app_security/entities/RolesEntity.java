@@ -10,10 +10,11 @@ import java.math.BigInteger;
 @Data
 public class RolesEntity {
 
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private BigInteger id;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigInteger id;
-    private String role;
+    @Column(name = "role_name")
+    private String name;
     private String description;
 
 }

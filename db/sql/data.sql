@@ -5,7 +5,7 @@ insert into customers (email, pwd) VALUES
 ('balance@debuggeandoieas.com', 'to_be_encoded');
 
 insert into roles (role_name, description, id_customer)
-values ('VIEW_ACCOUNT','can view account endpoint', 1),
-       ('VIEW_CARDS','can view cards endpoint', 2),
-       ('VIEW_LOANS','can view loans endpoint', 3),
-       ('VIEW_BALANCE','can view balance endpoint', 4);
+values ('ROLE_ADMIN','can view account endpoint', 1),
+       ('ROLE_ADMIN','can view cards endpoint', 2),
+       ('ROLE_USER','can view loans endpoint', 3),
+       ('ROLE_USER','can view balance endpoint', 4);

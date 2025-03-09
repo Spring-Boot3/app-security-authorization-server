@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -18,7 +19,8 @@ public class CustomerEntity implements Serializable {
     private String email;
     @Column(name = "pwd")
     private String password;
-    @Column(name = "rol")
-    private String role;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_customer")
+    private List<RolesEntity> role;
 
 }

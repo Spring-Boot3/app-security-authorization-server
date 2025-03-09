@@ -29,7 +29,12 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         final var customer = customerFromDb.orElseThrow(() -> new BadCredentialsException("Customer not found"));
         final var passwordHash = customer.getPassword();
         if (passwordEncoder.matches(password, passwordHash)) {
-            final var authorities = Collections.singletonList(new SimpleGrantedAuthority(customer.getRole()));
+//            final var authorities = Collections.singletonList(new SimpleGrantedAuthority(customer.getRole()));
+            final var roles = customer.getRole();
+            final var authorities = roles
+                    .stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getName()))
+                    .toList();
             return new UsernamePasswordAuthenticationToken(username, password, authorities);
         } else {
             throw new BadCredentialsException("Bad credentials");
