@@ -1,11 +1,16 @@
 package com.romlab.app_security.security;
 
+import com.romlab.app_security.security.filters.JWTValidationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -43,8 +48,10 @@ public class SecurityConfig {
     }*/
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.addFilterBefore(new ApiKeyFilter(), BasicAuthenticationFilter.class);
+    @Autowired
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JWTValidationFilter jwtValidationFilter) throws Exception {
+        //httpSecurity.addFilterBefore(new ApiKeyFilter(), BasicAuthenticationFilter.class);
+        httpSecurity.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         var requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
         httpSecurity.authorizeHttpRequests(auth ->
@@ -61,9 +68,10 @@ public class SecurityConfig {
         /*Esto es para deshabilitar los CORS y CSRF !No recomendado para ambientes deployados!*/
        /* httpSecurity.cors(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);*/
+        httpSecurity.addFilterAfter(jwtValidationFilter, BasicAuthenticationFilter.class);
         httpSecurity.cors(cors -> corsConfigurationSource());
         httpSecurity.csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler)
-                .ignoringRequestMatchers("/welcome", "/about-us")
+                .ignoringRequestMatchers("/welcome", "/about-us", "/api/auth")
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
         return httpSecurity.build();
@@ -119,5 +127,10 @@ public class SecurityConfig {
         * el "/**" quiere decir que la configuracion sera aplicada a todos mis recursos(endpoints) */
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }
