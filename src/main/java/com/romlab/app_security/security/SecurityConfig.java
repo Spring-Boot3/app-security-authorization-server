@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -67,8 +69,22 @@ public class SecurityConfig {
                 .requestMatchers(USER_RESOURCES).hasAuthority(AUTH_READ)
                 .anyRequest().permitAll());
         http.oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));
-
         return http.build();
+    }
+
+    @Bean
+    @Order(3)
+    SecurityFilterChain UserSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth2 -> auth2
+                .requestMatchers(ADMIN_RESOURCES).hasRole(ROLE_ADMIN)
+                .requestMatchers(USER_RESOURCES).hasRole(ROLE_USER)
+                .anyRequest().permitAll());
+        return http.build();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

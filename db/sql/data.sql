@@ -1,8 +1,8 @@
 insert into customers (email, pwd) VALUES
-('account@debuggeandoieas.com', 'to_be_encoded'),
-('cards@debuggeandoieas.com', 'to_be_encoded'),
-('loans@debuggeandoieas.com', 'to_be_encoded'),
-('balance@debuggeandoieas.com', 'to_be_encoded');
+('account@debuggeandoieas.com', '$2a$10$NqT7XpTGPlsYWyNXfsyYsePAXZ5YgXWUYFWKi6wziuiI4HmFrmKla'),
+('cards@debuggeandoieas.com', '$2a$10$NqT7XpTGPlsYWyNXfsyYsePAXZ5YgXWUYFWKi6wziuiI4HmFrmKla'),
+('loans@debuggeandoieas.com', '$2a$10$NqT7XpTGPlsYWyNXfsyYsePAXZ5YgXWUYFWKi6wziuiI4HmFrmKla'),
+('balance@debuggeandoieas.com', '$2a$10$NqT7XpTGPlsYWyNXfsyYsePAXZ5YgXWUYFWKi6wziuiI4HmFrmKla');
 
 insert into roles (role_name, description, id_customer)
 values ('ROLE_ADMIN','can view account endpoint', 1),
@@ -16,7 +16,7 @@ insert into partners(
 )
 values ('debuggeandoideas',
         'debuggeando ideas',
-        'secret',
+        '$2a$10$ePAcFcYoJTgrtOsskdapquryO2mdgjZ34E7vM39vigP.FjF9JVUX2',
         'read,write',
         'authorization_code,refresh_token',
         'client_secret_basic,client_secret_jwt',
@@ -24,7 +24,7 @@ values ('debuggeandoideas',
         'https://springone.io/authorized'),
        ('romLab',
         'romLab incorporation',
-        'secret',
+        '$2a$10$ePAcFcYoJTgrtOsskdapquryO2mdgjZ34E7vM39vigP.FjF9JVUX2',
         'read,write',
         'authorization_code,refresh_token',
         'client_secret_basic,client_secret_jwt',
