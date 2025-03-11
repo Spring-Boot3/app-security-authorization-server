@@ -35,6 +35,7 @@ public class PartnerRegisteredClientService implements RegisteredClientRepositor
 
             return RegisteredClient
                     .withId(partner.getId().toString())
+                    .clientId(partner.getClientId())
                     .clientSecret(partner.getClientSecret())
                     .clientName(partner.getClientName())
                     .redirectUri(partner.getRedirectUri())

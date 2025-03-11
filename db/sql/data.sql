@@ -22,6 +22,7 @@ values ('debuggeandoideas',
         'client_secret_basic,client_secret_jwt',
         'https://oauthdebugger.com/debug',
         'https://springone.io/authorized'),
+
        ('romLab',
         'romLab incorporation',
         '$2a$10$ePAcFcYoJTgrtOsskdapquryO2mdgjZ34E7vM39vigP.FjF9JVUX2',
