@@ -74,7 +74,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(3)
-    SecurityFilterChain UserSecurityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth2 -> auth2
                 .requestMatchers(ADMIN_RESOURCES).hasRole(ROLE_ADMIN)
                 .requestMatchers(USER_RESOURCES).hasRole(ROLE_USER)
