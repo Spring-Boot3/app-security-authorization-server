@@ -71,21 +71,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-		<!--OAUTH2.0-->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-resource-server</artifactId>
-			<version>6.4.3</version>
-		</dependency>
-
-
+		<!--Spring Security authorization server - Oauth2.0 -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-authorization-server</artifactId>
 			<version>1.4.2</version>
 		</dependency>
-
-
 	</dependencies>
 
 	<build>
