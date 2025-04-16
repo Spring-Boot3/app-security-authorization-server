@@ -23,7 +23,6 @@ public class PartnerRegisteredClientService implements RegisteredClientRepositor
     @Override
     public RegisteredClient findByClientId(String clientId) {
         var partnerOpt = partnerRepository.findByClientId(clientId);
-        System.out.println("--->>>> " + partnerOpt);
         return partnerOpt.map(partner -> {
             var authorizationGrantType = Arrays.stream(partner.getGrantTypes().split(","))
                     .map(AuthorizationGrantType::new)

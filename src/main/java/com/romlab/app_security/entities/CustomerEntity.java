@@ -3,14 +3,17 @@ package com.romlab.app_security.entities;
 import jakarta.persistence.*;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "customers")
-@Data
 public class CustomerEntity implements Serializable {
 
     @Id

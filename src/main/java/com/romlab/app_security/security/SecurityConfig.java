@@ -78,7 +78,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(2)
     SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/login").permitAll()
@@ -97,9 +96,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            response.sendRedirect("http://localhost:4200/");
-                        })
+                        .logoutSuccessUrl("http://localhost:4200/")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID", "XSRF-TOKEN")
                         .permitAll())
