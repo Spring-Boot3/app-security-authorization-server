@@ -187,6 +187,7 @@ public class SecurityConfig {
         return keyPair;
     }
 
+    /*Genera las llaves publicas y privadas*/
     private static RSAKey generateKeys() {
         var keyPair = generateRSA();
         var publicKey = (RSAPublicKey) keyPair.getPublic();
