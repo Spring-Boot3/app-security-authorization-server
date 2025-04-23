@@ -13,9 +13,6 @@ import java.util.List;
 @RestController
 public class LogoutEndpoint {
 
-    private static final String DEFAULT_REDIRECT = "http://localhost:4200/";
-    private static final List<String> ALLOWED_REDIRECT_URIS = List.of("http://localhost:4200/","http://localhost:4200/inicio");
-
     @GetMapping("/logouts")
     public String logout(
             @RequestParam(value = "post_logout_redirect_uri", required = false) String postLogoutRedirectUri,
@@ -24,7 +21,6 @@ public class LogoutEndpoint {
             Authentication authentication
     ) {
         if (authentication != null) { new SecurityContextLogoutHandler().logout(request, response, authentication); }
-        String safeRedirectUri = ALLOWED_REDIRECT_URIS.contains(postLogoutRedirectUri) ? postLogoutRedirectUri: DEFAULT_REDIRECT;
-        return "redirect:" + safeRedirectUri;
+        return "redirect:" + postLogoutRedirectUri;
     }
 }

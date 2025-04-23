@@ -23,6 +23,7 @@ public class CustomerUserDetails implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.customerRepository.findByEmail(username)
+
                 .map(customer -> {
                     List<SimpleGrantedAuthority> authorities = customer.getRole().stream()
                             .map(role -> new SimpleGrantedAuthority(role.getName()))
