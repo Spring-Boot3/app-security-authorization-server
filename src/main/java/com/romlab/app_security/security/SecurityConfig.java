@@ -7,6 +7,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import com.romlab.app_security.components.CustomAuthenticationFailureHandler;
 import com.romlab.app_security.components.HtmxLoginSuccessHandler;
 import com.romlab.app_security.services.CustomerUserDetails;
+import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,7 @@ import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2AuthorizationCodeAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -99,9 +101,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/login").permitAll()
-                .requestMatchers("/loans/**", "/balance/**").hasRole("USER")
-                .requestMatchers("/accounts/**", "/cards/**").hasRole("ADMIN")
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/login", "/oidc/logout").permitAll()
                 .anyRequest().permitAll()
         ).formLogin(formLogin ->
                 formLogin
@@ -113,12 +113,6 @@ public class SecurityConfig {
                         .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/logouts")
-                        .logoutSuccessUrl("http://localhost:4200/")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID", "XSRF-TOKEN")
-                        .permitAll())
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
@@ -154,7 +148,9 @@ public class SecurityConfig {
     // Configura el authorizationServer de autorizacion
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+        return AuthorizationServerSettings.builder()
+                .oidcLogoutEndpoint("/oauth2/logout")
+                .build();
     }
 
     // JWK => Json Web Key
